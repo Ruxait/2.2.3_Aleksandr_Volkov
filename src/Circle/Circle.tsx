@@ -19,6 +19,7 @@ export const Circle = forwardRef<HTMLDivElement, Props>(
   );
   return (
     <div
+      ref={ref}
       className={myClass}
       onClick={onClick}
       onKeyDown={onKeyDown}
