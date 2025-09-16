@@ -1,9 +1,12 @@
-import { useState, KeyboardEvent } from 'react';
+import { useState, KeyboardEvent, useRef } from 'react';
 import './App.css';
 import { Circle } from './Circle/Circle';
 
 function App() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const circlesRef = useRef<HTMLDivElement[]>([]);
+
+  const colors = ["red", "orange", "green"];
 
   function handleClick(index: number) {
     setActiveIndex((prev) => (prev === index ? null : index));
@@ -14,49 +17,33 @@ function App() {
       handleClick(index);
     }
 
-    if (event.key === 'Tab') {
+    if (event.key === "Tab") {
       event.preventDefault();
 
-      const circles = document.querySelectorAll<HTMLDivElement>('.circle');
-      const currentIndex = Array.from(circles).indexOf(event.currentTarget);
-
+      const currentIndex = index;
       const nextIndex = event.shiftKey
-        ? (currentIndex - 1 + circles.length) % circles.length
-        : (currentIndex + 1) % circles.length;
-
-      circles[nextIndex]?.focus();
+        ? (currentIndex - 1 + colors.length) % colors.length 
+        : (currentIndex + 1) % colors.length; 
+      circlesRef.current[nextIndex]?.focus();
     }
   }
 
   return (
     <div className="semaphore-container">
-      <div className="semaphore-item">
-        <Circle
-          color="red"
-          onClick={() => handleClick(0)}
-          active={activeIndex === 0}
-          onKeyDown={(e) => handleKeyDown(e, 0)}
-          tabIndex={0}
-        />
-      </div>
-      <div className="semaphore-item">
-        <Circle
-          color="orange"
-          onClick={() => handleClick(1)}
-          active={activeIndex === 1}
-          onKeyDown={(e) => handleKeyDown(e, 1)}
-          tabIndex={0}
-        />
-      </div>
-      <div className="semaphore-item">
-        <Circle
-          color="green"
-          onClick={() => handleClick(2)}
-          active={activeIndex === 2}
-          onKeyDown={(e) => handleKeyDown(e, 2)}
-          tabIndex={0}
-        />
-      </div>
+      {colors.map((color, index) => (
+        <div className="semaphore-item" key={color}>
+          <Circle
+            ref={(el) => {
+              if (el) circlesRef.current[index] = el;
+            }}
+            color={color}
+            onClick={() => handleClick(index)}
+            active={activeIndex === index}
+            onKeyDown={(e) => handleKeyDown(e, index)}
+            tabIndex={0}
+          />
+        </div>
+      ))}
     </div>
   );
 }

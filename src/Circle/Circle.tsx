@@ -1,4 +1,5 @@
 import './Circle.css';
+import { forwardRef } from "react";
 import classNames from 'classnames';
 
 interface Props {
@@ -9,7 +10,8 @@ interface Props {
   tabIndex?: number;
 }
 
-export function Circle({ color, active, onClick, onKeyDown, tabIndex }: Props) {
+export const Circle = forwardRef<HTMLDivElement, Props>(
+  ({ color, active, onClick, onKeyDown, tabIndex }, ref) => {
   const myClass = classNames(
     'circle',
     `circle-${color}`,
@@ -24,3 +26,4 @@ export function Circle({ color, active, onClick, onKeyDown, tabIndex }: Props) {
     />
   );
 }
+)
